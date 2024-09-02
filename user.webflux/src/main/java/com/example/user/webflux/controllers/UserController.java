@@ -30,11 +30,11 @@ public class UserController {
          return Mono.just(ResponseEntity.status(HttpStatus.ACCEPTED).body("User deleted"));
     }
     @GetMapping()
-    Flux<UserEntity> getAllUsers(){
+    Flux<UserDTO> getAllUsers(){
         return userServiceImpl.getAllUsers();
     }
     @GetMapping("/get/{id}")
-    Mono<UserEntity> getUserById(@PathVariable Long id) {
+    Mono<UserDTO> getUserById(@PathVariable Long id) {
         return userServiceImpl.getUserById(id);
     }
 }
