@@ -24,12 +24,11 @@ public class UserServiceImpl implements UserService {
 
     private WebClient webClient = WebClient.builder().baseUrl("http://localhost:8081/api/v2/task").build();
 
-    private UserEntityAndUserDTO userEntityAndUserDTO = new UserEntityAndUserDTO();
 
     @Override
     public Mono<UserEntity> save(UserDTO user) {
         validateUserBody(user);
-        return (userRepository.save(userEntityAndUserDTO.userDTOToUserEntity(user)));
+        return (userRepository.save(UserEntityAndUserDTO.userDTOToUserEntity(user)));
     }
 
     @Override
@@ -55,7 +54,7 @@ public class UserServiceImpl implements UserService {
                      getTaskDTOByIdUser(existedUsers.getId())
                             .collectList()
                             .flatMap((task)-> {
-                                UserDTO userDTO = userEntityAndUserDTO.userEntityToUserDTO(existedUsers);
+                                UserDTO userDTO = UserEntityAndUserDTO.userEntityToUserDTO(existedUsers);
                                 userDTO.setTaskDTO(task);
                                 return Mono.just(userDTO);
                               })));
