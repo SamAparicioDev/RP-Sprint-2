@@ -18,7 +18,7 @@ public class UserController {
 
     @PostMapping()
     Mono<UserEntity> saveUser(@RequestBody UserDTO userDTO) {
-        return userServiceImpl.save(userDTO);
+        return userServiceImpl.saveUser(userDTO);
     }
     @PutMapping("/update/{id}")
     Mono<UserEntity> updateUser(@PathVariable Long id,@RequestBody UserDTO userDTO) {

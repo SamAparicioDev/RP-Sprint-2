@@ -2,7 +2,9 @@ package com.example.user.webflux.mappers;
 
 import com.example.user.webflux.dto.UserDTO;
 import com.example.user.webflux.entities.UserEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserEntityAndUserDTO {
     public static UserEntity userDTOToUserEntity(UserDTO userDTO) {
         return new UserEntity(userDTO.getUsername(), userDTO.getEmail(),userDTO.getPassword(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAge());

@@ -22,13 +22,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     private WebClient webClient = WebClient.builder().baseUrl("http://localhost:8081/api/v2/task").build();
 
 
     @Override
-    public Mono<UserEntity> save(UserDTO user) {
+    public Mono<UserEntity> saveUser(UserDTO user) {
         validateUserBody(user);
-        return (userRepository.save(UserEntityAndUserDTO.userDTOToUserEntity(user)));
+       return userRepository.save(UserEntityAndUserDTO.userDTOToUserEntity(user));
+
     }
 
     @Override
@@ -80,6 +82,11 @@ public class UserServiceImpl implements UserService {
             existedItem.setLastName(user.getLastName());
             return userRepository.save(existedItem);
         }).switchIfEmpty(Mono.error(new UserNotFoundException("User Not Found")));
+    }
+
+    @Override
+    public Mono<UserEntity> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public void validateUserBody(UserDTO userDTO) throws UserEmptyFieldException {
