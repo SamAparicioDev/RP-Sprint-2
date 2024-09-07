@@ -14,12 +14,16 @@ import java.util.Date;
 public class JwtUtils {
 
     private final  SecretKey secretKey;
+
     @Value("${jwt.expiration}")
     private long expiration;
+
     private String secret = System.getenv("JWT_SECRET");
+
     public JwtUtils() {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secret));
     }
+
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
