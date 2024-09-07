@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
-    @PostMapping()
+    @PostMapping("/save")
     Mono<UserEntity> saveUser(@RequestBody UserDTO userDTO) {
         return userServiceImpl.saveUser(userDTO);
     }

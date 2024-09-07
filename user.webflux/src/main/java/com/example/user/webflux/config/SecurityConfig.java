@@ -6,20 +6,23 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
+@EnableWebFluxSecurity
 public class SecurityConfig {
      @Bean
      public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
          return  http
                  .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                 .cors(ServerHttpSecurity.CorsSpec::disable)
                  .authorizeExchange(authorizeExchangeSpec ->
                      authorizeExchangeSpec.pathMatchers("/api/v2/auth/**").permitAll()
                              .anyExchange().permitAll())
-                     .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                  .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                  .build();
      }

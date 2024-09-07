@@ -1,5 +1,6 @@
 package com.example.user.webflux.services.impl;
 
+import com.example.user.webflux.config.JwtUtils;
 import com.example.user.webflux.dto.TaskDTO;
 import com.example.user.webflux.dto.UserDTO;
 import com.example.user.webflux.entities.UserEntity;
@@ -9,6 +10,13 @@ import com.example.user.webflux.services.UserService;
 import com.example.user.webflux.services.exceptions.UserEmptyFieldException;
 import com.example.user.webflux.services.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -25,13 +33,24 @@ public class UserServiceImpl implements UserService {
 
     private WebClient webClient = WebClient.builder().baseUrl("http://localhost:8081/api/v2/task").build();
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ReactiveAuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtil;
+
 
     @Override
     public Mono<UserEntity> saveUser(UserDTO user) {
         validateUserBody(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
        return userRepository.save(UserEntityAndUserDTO.userDTOToUserEntity(user));
 
     }
+
 
     @Override
     public Mono<UserDTO> getUserById(Long id) {
@@ -87,6 +106,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserEntity> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Mono<String> authenticate(String username, String password) {
+        return authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                password)
+                        ).map(auth -> {
+                    UserDetails userDetails = (UserDetails) auth.getPrincipal();
+                    String jwt = jwtUtil.generateToken(userDetails.getUsername());
+                    return jwt;
+                })
+                .doOnError(e -> new UserNotFoundException("Incorrect Credentials"));
     }
 
     public void validateUserBody(UserDTO userDTO) throws UserEmptyFieldException {
