@@ -2,6 +2,7 @@ package com.example.user.webflux.config;
 
 import com.example.user.webflux.repositories.UserRepository;
 import com.example.user.webflux.services.UserService;
+import com.example.user.webflux.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 @Service
 public class CustomerUserDetails implements ReactiveUserDetailsService {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         return userService.getUserByUsername(username)
