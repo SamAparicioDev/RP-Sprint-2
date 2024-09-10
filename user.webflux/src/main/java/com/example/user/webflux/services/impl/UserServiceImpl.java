@@ -36,11 +36,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ReactiveAuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtils jwtUtil;
 
 
     @Override
@@ -108,19 +103,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
-    @Override
-    public Mono<String> authenticate(String username, String password) {
-        return authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                password)
-                        ).map(auth -> {
-                    UserDetails userDetails = (UserDetails) auth.getPrincipal();
-                    String jwt = jwtUtil.generateToken(userDetails.getUsername());
-                    return jwt;
-                })
-                .doOnError(e -> new UserNotFoundException("Incorrect Credentials"));
-    }
+
 
     public void validateUserBody(UserDTO userDTO) throws UserEmptyFieldException {
         if(userDTO.getUsername().isBlank()){

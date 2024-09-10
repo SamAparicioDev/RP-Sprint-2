@@ -12,6 +12,6 @@ public interface UserService {
     Mono<Void> deleteUserById(Long id);
     Mono<UserEntity> updateUserById(Long id, UserDTO user);
     Mono<UserEntity> getUserByUsername(String username);
-    Mono<String> authenticate(String username, String password);
+
 
 }

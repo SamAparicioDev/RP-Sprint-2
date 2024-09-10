@@ -4,6 +4,7 @@ package com.example.user.webflux.controllers;
 import com.example.user.webflux.config.JwtUtils;
 import com.example.user.webflux.dto.Login;
 import com.example.user.webflux.services.UserService;
+import com.example.user.webflux.services.impl.AuthServiceImpl;
 import com.example.user.webflux.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,11 @@ import reactor.core.publisher.Mono;
 public class AuthLoginController {
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private AuthServiceImpl authServiceImpl;
 
 
     @PostMapping("/login")
     public ResponseEntity<Mono<String>> authenticateUser(@RequestBody Login login) {
-        return  ResponseEntity.status(HttpStatus.ACCEPTED).body(userServiceImpl.authenticate(login.username(),login.password()));
+        return  ResponseEntity.status(HttpStatus.ACCEPTED).body(authServiceImpl.authenticate(login.username(),login.password()));
     }
 }
